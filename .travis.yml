@@ -1,0 +1,74 @@
+#filename:.travis.yml
+sudo: false
+cache:
+  bundler: true
+  directories:
+  - cache/
+notifications:
+  email: false
+language: c
+compiler: gcc
+env:
+  global:
+  - PACKAGE=badvpn-tun2socks
+  - USER=widewing
+  - REPO=tun2socks-Openwrt
+  # 设置环境变量
+  # env:
+  #  global:
+  #  - USER: widewing
+  #  - REPO: tun2socks-Openwrt
+  #  - PACKAGE: badvpn-tun2socks #OpenWrt软件包名称
+  - secure: "NvjCTanp3AkuTNWmQswEdKqhtbm4qHqclGK/9es26uXX5HfxHD4CurNVlbfH+shtFQZSG0mVmg4z09jmwJMk5InLN6toyUt0elF1wPrZCO6LLW77Xna3c6KkxHJBSSfij/oco5nMjIuWfD3dB1863m/7NYY092LSeLGKbqrbfQhg5aPx4qGfqbKDtVFpeCRXTy7c3HEjiB/a9/WTyLZJ5jdXx/S3GqoZHpBCmh7UgCPGDxdnSGL+Nblih7rs4AncoYV5WUaoi3aI3ZqIactPvkG4t5ABHssko7xjYtySA33DOJHXSxJFLCvDSgzDC9T/0ngCijMRnHdim8kHHcb96+FFvarRx+/vwjxeoxosUmI5qm1S6m9rCE+rwfGvGBr5RuSauIs9VjcmOrTeb31cuCIUVgEDrmqfWKydPqGgM0nrRmyXja4ZRC48F1NaThD5UYmaMB7MfkydXtBLrp9IiQtjG6lt2DFMAh0mYlvBV14bvrkvkZxzGi+87yidJE7f9ZKrgBdWzZrZ4V4n+URuV+yjQTlTs00G2Ezk9gegG32mx3oZf0vx7Vc/c3tVgpy0K/imiHG3TX1arO15CWUOgZq3t886fwqdirHrBIkqnxkEmaQoIrZpZF828vjijhA8RO5FRjYprKsAb/UWYTyOBkOH2JObBvmp1J297lmfyPI="
+    # Go to GitHub.com -> Settings -> Applications -> Personal Access Tokens 
+    # —> Create new token, and copy it to your clipboard
+    # travis encrypt TOKEN=f4d09fab4f86194492f6898d525e8008ad19c0f6 -r widewing/tun2socks-Openwrt
+    # 注意！这里加密的内容包含 「TOKEN=」
+    # 会生成环境变量${TOKEN}，${TOKEN}等同于123459...
+    # Paste here
+  matrix:
+  - SDK_URL=https://downloads.lede-project.org/releases/17.01.4/targets/ar71xx/generic/lede-sdk-17.01.4-ar71xx-generic_gcc-5.4.0_musl-1.1.16.Linux-x86_64.tar.xz
+  #SDK的下载连接,按需填写，需要什么平台，添加什么平台的sdk下载连接
+install:
+- mkdir -p $TRAVIS_BUILD_DIR/local ; cd $TRAVIS_BUILD_DIR/local
+- wget "http://us.archive.ubuntu.com/ubuntu/pool/main/c/ccache/ccache_3.1.6-1_amd64.deb"
+- dpkg -x *.deb .
+- mkdir -p $TRAVIS_BUILD_DIR/cache ; cd $TRAVIS_BUILD_DIR/cache
+- wget -c $SDK_URL
+- mkdir -p $TRAVIS_BUILD_DIR/sdk ; cd $TRAVIS_BUILD_DIR/sdk
+- export FILE=$TRAVIS_BUILD_DIR/cache/$(basename $SDK_URL)
+- file $FILE
+- tar xjf $FILE
+- cd $TRAVIS_BUILD_DIR/sdk/OpenWrt-SDK-*
+- mkdir package/$PACKAGE
+- ln -s $TRAVIS_BUILD_DIR/Makefile package/$PACKAGE/
+- ln -s $TRAVIS_BUILD_DIR/src package/$PACKAGE/
+script:
+- export PATH=$TRAVIS_BUILD_DIR/local/usr/bin:$PATH
+- cd $TRAVIS_BUILD_DIR/sdk/OpenWrt-SDK-*
+- "./scripts/feeds update packages >/dev/null"
+- make V=s
+- find $TRAVIS_BUILD_DIR/sdk/OpenWrt-SDK-*/bin/
+- find . -name *.ipk -exec cp {} $TRAVIS_BUILD_DIR \;
+- cd $TRAVIS_BUILD_DIR/
+- chmod a+x $TRAVIS_BUILD_DIR/deploy.sh
+after_success: "$TRAVIS_BUILD_DIR/deploy.sh"
+before_deploy: git fetch --tags
+deploy:
+  provider: releases
+  api_key:
+    secure: "hfQPG4vwhyW5jUdBLp/lHLATc4+8jt0oUtEVMRN00eJf6kL+mJggVb+nLnod5U/4W+g3fN9STIwgAgJkjdJCT6pzEhKcGtTvX4C+Va0GnC1ZX8F4RmdTWdl37Q9yUKabDZKf+owTT6WAiryVZIviCW3TaHf4ADkKqJy3ORiPmpJ7zUHO+OLq/AlaWRIYb5z0pcljpZBkX2CD6gSaVPLWlc2UeiXyF3vDlVMwP5FY4jtae8jse5tOfIPphLOtdrHqx461/4ikGvlFoDV1nhzMbFMRbIzMWlWTxCatVv7gNrbeoHmLchcEQxuDfRPZwr3u1kuK6wsp904sgmHoKRiUDFgAMdSJb02goDzTFoeGnZhdeoQlv646Lt9iBmAX6TZy2gY18OFk2ok1gS/6Ijk0eBJrfluHO8BnvnrYbCspMWUddOeKhKXe8UWaGMZ0p1dwcFs6s+oP8C7hYI1kwp9kFRqbBMXDpCz8QyxYpnl4wWJkXlMwLkEkyzhTxN3/y+2SDDLDpcAoZ0LDbc7sjpiPADOoDyC0C1WXdv+3pP0vxRGKGxdHzL2euQSsi01xUqmvMdbp1xjngaM4GHJh5JZ5cSHRk7QlvkKnNE0OjW+yg7OZlG+iynU581zr6DTfd58HFJsFPlqgjI4u5Ul9UAzLMzZ83xQL03peuohgjKSx0N8="
+      # Go to GitHub.com -> Settings -> Applications -> Personal Access Tokens 
+      # —> Create new token, and copy it to your clipboard
+      # travis-encrypt -r username/reponame api_key(Personal Access Tokens)
+      # e.g. travis-encrypt -r username/reponame 123459...
+      # 注意！这里加密的内容不包含 「TOKEN=」
+      # 直接加密123459...
+      # encrypted api_key
+      # Paste here
+  skip_cleanup: true
+  file_glob: true
+  file: "$TRAVIS_BUILD_DIR/*.ipk"
+  on:
+    tags: true
+    all_branches: true

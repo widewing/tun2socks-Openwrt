@@ -5,7 +5,7 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=badvpn
+PKG_NAME:=badvpn-tun2socks
 PKG_VERSION:=1.999.130
 PKG_RELEASE:=1
 

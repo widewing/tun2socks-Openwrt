@@ -39,7 +39,7 @@ install:
 - export FILE=$TRAVIS_BUILD_DIR/cache/$(basename $SDK_URL)
 - file $FILE
 - tar xf $FILE
-- cd $TRAVIS_BUILD_DIR/sdk/OpenWrt-SDK-*
+- cd $TRAVIS_BUILD_DIR/sdk/lede-sdk-*
 - mkdir package/$PACKAGE
 - ln -s $TRAVIS_BUILD_DIR/badvpn/Makefile package/$PACKAGE/
 script:
@@ -47,7 +47,7 @@ script:
 - cd $TRAVIS_BUILD_DIR/sdk/lede-sdk-*
 - "./scripts/feeds update packages >/dev/null"
 - make V=s
-- find $TRAVIS_BUILD_DIR/sdk/OpenWrt-SDK-*/bin/
+- find $TRAVIS_BUILD_DIR/sdk/lede-sdk-*/bin/
 - find . -name *.ipk -exec cp {} $TRAVIS_BUILD_DIR \;
 - cd $TRAVIS_BUILD_DIR/
 - chmod a+x $TRAVIS_BUILD_DIR/deploy.sh

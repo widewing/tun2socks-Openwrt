@@ -5,7 +5,7 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=badvpn-tun2socks
+PKG_NAME:=badvpn
 PKG_VERSION:=1.999.130
 PKG_RELEASE:=1
 
@@ -49,4 +49,4 @@ define Package/badvpn-tun2socks/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tun2socks/badvpn-tun2socks $(1)/usr/bin/badvpn-tun2socks
 endef
 
-$(eval $(call BuildPackage,badvpn))
+$(eval $(call BuildPackage,badvpn-tun2socks))

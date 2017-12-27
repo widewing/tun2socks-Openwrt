@@ -44,7 +44,7 @@ install:
 - ln -s $TRAVIS_BUILD_DIR/badvpn/Makefile package/$PACKAGE/
 script:
 - export PATH=$TRAVIS_BUILD_DIR/local/usr/bin:$PATH
-- cd $TRAVIS_BUILD_DIR/sdk/OpenWrt-SDK-*
+- cd $TRAVIS_BUILD_DIR/sdk/lede-sdk-*
 - "./scripts/feeds update packages >/dev/null"
 - make V=s
 - find $TRAVIS_BUILD_DIR/sdk/OpenWrt-SDK-*/bin/

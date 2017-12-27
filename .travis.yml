@@ -41,8 +41,7 @@ install:
 - tar xjf $FILE
 - cd $TRAVIS_BUILD_DIR/sdk/OpenWrt-SDK-*
 - mkdir package/$PACKAGE
-- ln -s $TRAVIS_BUILD_DIR/Makefile package/$PACKAGE/
-- ln -s $TRAVIS_BUILD_DIR/src package/$PACKAGE/
+- ln -s $TRAVIS_BUILD_DIR/badvpn/Makefile package/$PACKAGE/
 script:
 - export PATH=$TRAVIS_BUILD_DIR/local/usr/bin:$PATH
 - cd $TRAVIS_BUILD_DIR/sdk/OpenWrt-SDK-*

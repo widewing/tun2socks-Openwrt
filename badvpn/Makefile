@@ -6,20 +6,20 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=badvpn
-PKG_VERSION:=1.999.117rc2
+PKG_VERSION:=1.999.130
 PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
-PKG_SOURCE_URL:=http://badvpn.googlecode.com/files/
-PKG_MD5SUM:=08fd8f719bd05a1124bbdf7c4ea8529f
+PKG_SOURCE:=$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://github.com/ambrop72/badvpn/archive/
+PKG_MD5SUM:=e65d8d298fc82eb9a6c12a9425a97e6d
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/badvpn
+define Package/badvpn-tun2socks
 	SECTION:=net
 	CATEGORY:=Network
 	DEPENDS:=+librt +libpthread +udev +coreutils +coreutils-stdbuf
-	TITLE:=BadVPN
+	TITLE:=BadVPN-Tun2socks
 	SUBMENU:=VPN
 endef
 
@@ -44,7 +44,7 @@ define Build/Compile
 	$(MAKE) -C $(PKG_BUILD_DIR)
 endef
 
-define Package/badvpn/install
+define Package/badvpn-tun2socks/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/tun2socks/badvpn-tun2socks $(1)/usr/bin/badvpn-tun2socks
 endef

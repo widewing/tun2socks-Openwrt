@@ -45,8 +45,9 @@ install:
 script:
 - export PATH=$TRAVIS_BUILD_DIR/local/usr/bin:$PATH
 - cd $TRAVIS_BUILD_DIR/sdk/lede-sdk-*
-- "./scripts/feeds update packages >/dev/null"
-- make V=s
+- ./scripts/feeds update packages >/dev/null
+- make defconfig
+- make package/badvpn-tun2socks/compile V=s
 - find $TRAVIS_BUILD_DIR/sdk/lede-sdk-*/bin/
 - find . -name *.ipk -exec cp {} $TRAVIS_BUILD_DIR \;
 - cd $TRAVIS_BUILD_DIR/

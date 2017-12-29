@@ -30,6 +30,7 @@ env:
   - SDK_URL=https://downloads.lede-project.org/releases/17.01.4/targets/ar71xx/generic/lede-sdk-17.01.4-ar71xx-generic_gcc-5.4.0_musl-1.1.16.Linux-x86_64.tar.xz
   #SDK的下载连接,按需填写，需要什么平台，添加什么平台的sdk下载连接
 install:
+- ls -l /usr/lib/x86_64-linux-gnu/libstdc++.so.*
 - mkdir -p $TRAVIS_BUILD_DIR/local ; cd $TRAVIS_BUILD_DIR/local
 - wget "http://us.archive.ubuntu.com/ubuntu/pool/main/c/ccache/ccache_3.1.6-1_amd64.deb"
 - dpkg -x *.deb .
